@@ -1,0 +1,6 @@
+length=5      #Box side length
+particles=16  #particle number
+vel0=2.5      #Initial velocity, ~temperature
+time=30       #Time length of simulation
+fps=30        #movie output frames/sec
+

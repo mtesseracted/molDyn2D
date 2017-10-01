@@ -1,3 +1,7 @@
+# Shadow files
+*~
+*.swp
+
 # Prerequisites
 *.d
 
