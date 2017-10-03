@@ -5,7 +5,8 @@ source inputs #import input variables
 pr1='Progress:['
 pr2='% done'
 prb='#######################################'
-prs='                                      '
+prs='                                       '
+blen=${#prb}
 spin="/-\|"
 rfsh="0.18" #Refresh rate of progress bar
 
@@ -48,14 +49,15 @@ while [ "$stat" -eq 0 ]; do
     curr=`ls -1tr |tail -1`
     b10curr="10#""${curr:3: -4}" #Current frame number, base 10
     percent=$( roundDiv $((100*$b10curr)) $images )
-    bcur=$( roundDiv $b10curr $fpb ) #bar current index
-    str1=${pr1}"${prb:0:$bcur}""\b${spin:k++%${#spin}:1}""${prs:$bcur}""]"${percent}${pr2}"\r"
+    bcur=$( roundDiv $(($b10curr*$blen)) $images ) #bar current index
+    str1=${pr1}"${prb:0:${bcur}}""${spin:k++%${#spin}:1}""${prs:$bcur}""]"${percent}${pr2}"\r"
     echo -ne "$str1"
     #echo -ne "Rendering Frame "$curr"\r"
 
     stat=`kill -0 $pid 2>/dev/null; echo $?`
 #    sleep 1
 done
+echo #newline
 
 wait #Explicitly wait for safety
 echo "Frame rendering complete."
