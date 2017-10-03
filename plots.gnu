@@ -1,3 +1,5 @@
+#Gnuplot script for plotting statistical data related to
+#  the molecular dynamics simulation
 set term pngcairo
 unset key
 
