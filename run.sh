@@ -1,20 +1,6 @@
 #!/bin/bash
 source inputs #import input variables
-
-#Progress bar strings
-pr1='Progress:['
-pr2='% done'
-prb='#######################################'
-prs='                                       '
-blen=${#prb}
-spin="/-\|"
-rfsh="0.18" #Refresh rate of progress bar
-
-roundDiv () {
-    #Integer division rounded to nearest integer
-    d2=$(( $2 / 2 ))
-    echo "$(( ($1+$d2) / $2))"
-}
+source progress.sh
 
 #Compile executables
 make main t=$time
@@ -22,40 +8,65 @@ exe1='time'$time'.exe'
 make plots
 
 #Optional command line arg:timestep size
-./$exe1 $length $particles $vel0 $1 >results.dat 2>err.dat
-#gnuplot < plots.gnu #plot statistical data
-echo "Molecular dynamics simulation complete."
+./$exe1 $length $particles $vel0 $1 >results.dat 2>err.dat &
+pid=$!
+echo "Running molecular dynamics in PID "$pid
 
-#Make frames
+if [ -n $1 ]; then
+    tstep=`grep '#define DELT*' main.cpp |head -1`
+    tstep=($tstep)
+    tstep=${tstep[2]}
+else
+    tstep=$1
+fi
+simSteps=`awk "BEGIN {print $time/$tstep}"`
+
+stat=`kill -0 $pid 2>/dev/null;echo $?`
+k=0 #Spinner dummy var
+while [ "$stat" -eq 0 ]; do
+
+    sleep $rfsh
+    curr=`tail -1 results.dat`
+    curr=($curr)
+    curr=${curr[0]}
+    curr=$((10#$curr)) #Strip leading zeros
+    spi=${spin:k++%${#spin}:1}
+    echo -ne "$(getBar $curr $simSteps 0 $SECONDS $spi)"
+    stat=`kill -0 $pid 2>/dev/null; echo $?`
+done
+echo #newline
+#gnuplot < plots.gnu #plot statistical data
+
+echo -n "Molecular dynamics simulation complete. "
+#echo -n "${pr1}$(formTime $SECONDS)"
+echo
+
+#Setup to render frames
 mkdir movie
 images=`wc -l < Pos.dat`
 cp Pos.dat movie
-echo "Begining render of "$images" frames."
 ./plots.exe $length $particles $images >movie.gnu
 mv movie.gnu movie
 cd movie
 
-#Render frames in the background
+#Render in the background
+tfs=$SECONDS #time frames start
 gnuplot < movie.gnu &
 pid=$!
-echo "Rendering Frames in PID "$pid
+echo
+echo "Begining render of "$images" frames in PID "$pid
 stat=`kill -0 $pid 2>/dev/null;echo $?`
-fpb=$( roundDiv $images ${#prb} ) #frames per bar
 
 k=0 #Spinner dummy var
 while [ "$stat" -eq 0 ]; do
 
     sleep $rfsh
     curr=`ls -1tr |tail -1`
-    b10curr="10#""${curr:3: -4}" #Current frame number, base 10
-    percent=$( roundDiv $((100*$b10curr)) $images )
-    bcur=$( roundDiv $(($b10curr*$blen)) $images ) #bar current index
-    str1=${pr1}"${prb:0:${bcur}}""${spin:k++%${#spin}:1}""${prs:$bcur}""]"${percent}${pr2}"\r"
-    echo -ne "$str1"
-    #echo -ne "Rendering Frame "$curr"\r"
-
+    curr=${curr:3:-4}
+    curr=$((10#$curr)) #Strip leading zeros
+    spi=${spin:k++%${#spin}:1}
+    echo -ne "$(getBar $curr $images $tfs $SECONDS $spi)"
     stat=`kill -0 $pid 2>/dev/null; echo $?`
-#    sleep 1
 done
 echo #newline
 
@@ -71,6 +82,8 @@ cd ../
 #Clean Up
 #rm movie/Pos.dat
 #zip -r movieImages movie &>/dev/null #save frames
-rm -rf movie
-make clean
+#rm -rf movie
+#make clean
+echo "::::::::::Program Complete::::::::::"
+echo "Total ${pr1}$(formTime $SECONDS)"
 #(EOF)
