@@ -4,12 +4,12 @@ molecular dynamics in 2D
 ## Dependencies and Running:
 This is a basic program to simulate particles in 2 dimensions under
 the influence of a Lennard-Jones type potential and make a movie of
-the molecular dynamics. It requires bash to run the control script,
-g++ to compile the molecular dynamics simulation, gnuplot to make 
-the frames of the movie, and mencoder to string the frames into a
+the molecular dynamics. It requires `bash` to run the control script,
+`g++` to compile the molecular dynamics simulation, `gnuplot` to make 
+the frames of the movie, and `mencoder` to string the frames into a
 movie. To run:
 
-%>bash run.sh
+$>bash run.sh
 
 ## Adjusting Inputs
 To adjust the simulation settings you can change the values in the 
