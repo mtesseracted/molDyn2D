@@ -1,3 +1,5 @@
+[![HitCount](http://hits.dwyl.io/mtesseracted/molDyn2D.svg)](http://hits.dwyl.io/mtesseracted/molDyn2D)
+
 # molDyn2D
 molecular dynamics in 2D
 
