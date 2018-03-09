@@ -13,6 +13,8 @@ movie. To run:
 
 $>bash run.sh
 
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/pgvsBWJwHeA/0.jpg)](http://www.youtube.com/watch?v=pgvsBWJwHeA "Sample Output, click for youtube video")
+
 ## Adjusting Inputs
 To adjust the simulation settings you can change the values in the 
 inputs file.
