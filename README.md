@@ -13,9 +13,11 @@ movie. To run:
 
 $>bash run.sh
 
-##Sample Output
+## Sample Output
 ![256 particles](https://media.giphy.com/media/cURsZCA4YHWfKzXaSS/giphy.gif)
+
 [Full Video of 256 particles](https://www.youtube.com/watch?v=pgvsBWJwHeA)
+
 [Full Video of 36 particles](https://www.youtube.com/watch?v=oJbWux4bWBU)
 
 ## Adjusting Inputs
